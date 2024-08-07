@@ -10,6 +10,7 @@ public class DungeonCreator : MonoBehaviour
     public int maxIterations;
     public int corridorWidth;
     public Material material;
+    public PhysicMaterial floorPhysicMaterial;
     [Range(0.0f, 0.3f)]
     public float roomBottomCornerModifier;
     [Range(0.7f, 1.0f)]
@@ -125,6 +126,10 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.transform.parent = transform;
+
+        MeshCollider meshCollider = dungeonFloor.AddComponent<MeshCollider>();
+        meshCollider.material = floorPhysicMaterial;
+        meshCollider.sharedMesh = mesh;
 
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
         {

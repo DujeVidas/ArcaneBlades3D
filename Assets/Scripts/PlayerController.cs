@@ -1,14 +1,17 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 20f;
+    public float maxSpeed = 30f;
     public float rotateSpeed = 8f;
     public LayerMask groundLayerMask;
     public float jumpForce = 10f;
     public Animator animator;
     public Camera playerCamera;
+    public TMPro.TMP_Text velocityText;
 
     private Vector3 moveDirection;
     private Rigidbody rb;
@@ -50,8 +53,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        velocityText.text = System.Math.Round(rb.velocity.magnitude, 2).ToString();
         // Update player position
-        rb.AddForce(moveDirection * moveSpeed);
+        if (rb.velocity.magnitude < maxSpeed)
+        {
+            rb.AddForce(moveDirection * moveSpeed);
+        }
 
         // Raycast forward to detect ground in front of the player's feet
         if (Physics.Raycast(transform.position - transform.up * 0.95f, transform.forward, 1f, groundLayerMask))

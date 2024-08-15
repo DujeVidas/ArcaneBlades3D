@@ -9,6 +9,7 @@ public class DungeonCreator : MonoBehaviour
     public int roomWidthMin, roomLengthMin;
     public int maxIterations;
     public int corridorWidth;
+    public Rigidbody playerBody;
     public Material material;
     public PhysicMaterial floorPhysicMaterial;
     [Range(0.0f, 0.3f)]
@@ -62,6 +63,11 @@ public class DungeonCreator : MonoBehaviour
             CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
         }
         CreateWalls(wallParent);
+
+        Vector2 firstRoomCenter = listOfRooms[0].CalculateCenter();
+        Vector3 firstRoomCenter3D = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
+        playerBody.transform.position = firstRoomCenter3D;
+        //playerBody.transform.position = listOfRooms[0].BottomLeftAreaCorner;
 
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
         enemyGenerator.GenerateEnemiesInRooms(listOfRooms,dungeonLength,dungeonWidth);

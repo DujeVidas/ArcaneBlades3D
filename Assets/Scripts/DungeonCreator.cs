@@ -30,8 +30,7 @@ public class DungeonCreator : MonoBehaviour
         
         CreateDungeon();
 
-        RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();
-        roomTypeAssigner.AssignRoomTypes(this);
+        
     }
 
     void DeleteAllEnemies()
@@ -85,6 +84,9 @@ public class DungeonCreator : MonoBehaviour
 
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
         enemyGenerator.GenerateEnemiesInRooms(listOfRooms,dungeonLength,dungeonWidth);
+
+        RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();
+        roomTypeAssigner.AssignRoomTypes(this);
     }
 
     private void CreateWalls(GameObject wallParent)

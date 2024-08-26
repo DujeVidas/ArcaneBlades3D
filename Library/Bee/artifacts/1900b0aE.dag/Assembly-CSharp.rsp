@@ -358,6 +358,7 @@
 "Assets/Scripts/DungeonCreator.cs"
 "Assets/Scripts/DungeonGenerator.cs"
 "Assets/Scripts/EnemyGenerator.cs"
+"Assets/Scripts/GraveyardPrefabManager.cs"
 "Assets/Scripts/Line.cs"
 "Assets/Scripts/Node.cs"
 "Assets/Scripts/RoomGenerator.cs"

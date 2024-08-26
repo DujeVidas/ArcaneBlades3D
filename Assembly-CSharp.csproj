@@ -9,8 +9,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
-    <ProjectGuid>{3CBB300E-E6FE-0075-7D97-9C056AD04C11}</ProjectGuid>
+    <RootNamespace>
+    </RootNamespace>
+    <ProjectGuid>{FF258FD1-4D0E-25AC-F167-01EEAA858B71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -66,6 +67,7 @@
     <Compile Include="Assets\Scripts\DungeonGenerator.cs" />
     <Compile Include="Assets\Scripts\CorridorsGenerator.cs" />
     <Compile Include="Assets\Scripts\BinarySpacePartitioner.cs" />
+    <Compile Include="Assets\Scripts\GraveyardPrefabManager.cs" />
     <Compile Include="Assets\Scripts\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\StructureHelper.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />

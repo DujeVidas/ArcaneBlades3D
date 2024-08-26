@@ -13,7 +13,8 @@ public class RoomTypeAssigner : MonoBehaviour
         AltarRoom,
         GraveyardRoom
     }
-
+    //public GameObject gravePrefab;
+    private GraveyardPrefabManager graveyardPrefabManager;
     public void AssignRoomTypes(DungeonCreator dungeonCreator)
     {
         Debug.Log("Here");
@@ -59,6 +60,18 @@ public class RoomTypeAssigner : MonoBehaviour
         {
             rooms[roomIndex].RoomType = RoomType.MonsterRoom;
             roomIndex++;
+        }
+
+        graveyardPrefabManager = FindObjectOfType<GraveyardPrefabManager>();
+        // Ensure the GraveyardPrefabManager is assigned and use it to place prefabs
+        if (graveyardPrefabManager != null)
+        {
+           // graveyardPrefabManager.gravePrefab = gravePrefab;
+            graveyardPrefabManager.PlacePrefabsInGraveyardRooms(rooms);
+        }
+        else
+        {
+            Debug.LogError("GraveyardPrefabManager is not assigned.");
         }
 
         // Debug log to verify the assignment

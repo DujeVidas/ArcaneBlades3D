@@ -362,6 +362,7 @@
 "Assets/Scripts/Node.cs"
 "Assets/Scripts/RoomGenerator.cs"
 "Assets/Scripts/RoomNode.cs"
+"Assets/Scripts/RoomTypeAssignment.cs"
 "Assets/Scripts/StructureHelper.cs"
 -langversion:9.0
 

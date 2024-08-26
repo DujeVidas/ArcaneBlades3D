@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FF258FD1-4D0E-25AC-F167-01EEAA858B71}</ProjectGuid>
+    <ProjectGuid>{3CBB300E-E6FE-0075-7D97-9C056AD04C11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\RoomNode.cs" />
+    <Compile Include="Assets\Scripts\RoomTypeAssignment.cs" />
     <Compile Include="Assets\Scripts\DungeonCreator.cs" />
     <Compile Include="Assets\Scripts\DungeonGenerator.cs" />
     <Compile Include="Assets\Scripts\CorridorsGenerator.cs" />

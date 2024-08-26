@@ -21,11 +21,17 @@ public class DungeonCreator : MonoBehaviour
     List<Vector3Int> possibleDoorHorizontalPosition;
     List<Vector3Int> possibleWallHorizontalPosition;
     List<Vector3Int> possibleWallVerticalPosition;
+
+    public List<RoomNode> RoomNodes { get; private set; } = new List<RoomNode>();
+    public List<CorridorNode> CorridorNodes { get; private set; } = new List<CorridorNode>();
     // Start is called before the first frame update
     void Start()
     {
         
         CreateDungeon();
+
+        RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();
+        roomTypeAssigner.AssignRoomTypes(this);
     }
 
     void DeleteAllEnemies()
@@ -50,6 +56,21 @@ public class DungeonCreator : MonoBehaviour
             roomTopCornerMidifier,
             roomOffset,
             corridorWidth);
+
+        RoomNodes.Clear();  // Clear the lists before adding new rooms and corridors
+        CorridorNodes.Clear();
+
+        foreach (var room in listOfRooms)
+        {
+            if (room is RoomNode)
+            {
+                RoomNodes.Add((RoomNode)room);
+            }
+            else if (room is CorridorNode)
+            {
+                CorridorNodes.Add((CorridorNode)room);
+            }
+        }
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
         possibleDoorVerticalPosition = new List<Vector3Int>();

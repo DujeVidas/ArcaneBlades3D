@@ -365,6 +365,7 @@
 "Assets/Scripts/RoomNode.cs"
 "Assets/Scripts/RoomTypeAssignment.cs"
 "Assets/Scripts/StructureHelper.cs"
+"Assets/Scripts/TreasureRoomPrefabManager.cs"
 -langversion:9.0
 
 /deterministic

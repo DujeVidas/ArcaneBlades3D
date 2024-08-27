@@ -52,9 +52,19 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteAllTreasure()
+    {
+        GameObject[] treasure = GameObject.FindGameObjectsWithTag("Treasure");
+        foreach (GameObject trea in treasure)
+        {
+            DestroyImmediate(trea);
+        }
+    }
+
     public void CreateDungeon()
     {
         DeleteAllCoffins();
+        DeleteAllTreasure();
         DeleteAllEnemies();
         DestroyAllChildren();
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);

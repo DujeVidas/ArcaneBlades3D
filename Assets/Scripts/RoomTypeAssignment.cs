@@ -16,6 +16,7 @@ public class RoomTypeAssigner : MonoBehaviour
     //public GameObject gravePrefab;
     private GraveyardPrefabManager graveyardPrefabManager;
     private TreasureRoomPrefabManager treasureRoomManager;
+    private LibraryRoomPrefabManager libroomPrefabManager;
     public void AssignRoomTypes(DungeonCreator dungeonCreator)
     {
         Debug.Log("Here");
@@ -79,6 +80,16 @@ public class RoomTypeAssigner : MonoBehaviour
         if (treasureRoomManager != null)
         {
             treasureRoomManager.PlaceTreasureInRooms(rooms);
+        }
+        else
+        {
+            Debug.LogError("TreasureRoomPrefabManager is not assigned.");
+        }
+
+        libroomPrefabManager = FindObjectOfType<LibraryRoomPrefabManager>();
+        if (libroomPrefabManager != null)
+        {
+            libroomPrefabManager.PlaceBookcasesInRooms(rooms);
         }
         else
         {

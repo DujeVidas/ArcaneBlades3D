@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Coffin
   - Treasure
+  - Bookcase
   layers:
   - Default
   - TransparentFX

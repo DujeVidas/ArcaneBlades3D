@@ -61,10 +61,20 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteAllBooks()
+    {
+        GameObject[] books = GameObject.FindGameObjectsWithTag("Bookcase");
+        foreach (GameObject book in books)
+        {
+            DestroyImmediate(book);
+        }
+    }
+
     public void CreateDungeon()
     {
         DeleteAllCoffins();
         DeleteAllTreasure();
+        DeleteAllBooks();
         DeleteAllEnemies();
         DestroyAllChildren();
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);

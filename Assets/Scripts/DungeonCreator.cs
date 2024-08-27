@@ -43,8 +43,18 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteAllCoffins()
+    {
+        GameObject[] coffins = GameObject.FindGameObjectsWithTag("Coffin");
+        foreach (GameObject coffin in coffins)
+        {
+            DestroyImmediate(coffin);
+        }
+    }
+
     public void CreateDungeon()
     {
+        DeleteAllCoffins();
         DeleteAllEnemies();
         DestroyAllChildren();
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);

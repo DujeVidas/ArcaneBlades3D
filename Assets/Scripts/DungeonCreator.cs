@@ -7,6 +7,7 @@ public class DungeonCreator : MonoBehaviour
 {
     public int dungeonWidth, dungeonLength;
     public int roomWidthMin, roomLengthMin;
+    public float wallHeight = 3.0f;
     public int maxIterations;
     public int corridorWidth;
     public Material material;
@@ -149,17 +150,21 @@ public class DungeonCreator : MonoBehaviour
     {
         foreach (var wallPosition in possibleWallHorizontalPosition)
         {
-            CreateWall(wallParent, wallPosition, wallHorizontal);
+            CreateWall(wallParent, wallPosition, wallHorizontal, wallHeight);
         }
         foreach (var wallPosition in possibleWallVerticalPosition)
         {
-            CreateWall(wallParent, wallPosition, wallVertical);
+            CreateWall(wallParent, wallPosition, wallVertical, wallHeight);
         }
     }
 
-    private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
+    private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab, float wallHeight)
     {
-        Instantiate(wallPrefab, wallPosition, Quaternion.identity, wallParent.transform);
+        GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity, wallParent.transform);
+
+        Vector3 newScale = wall.transform.localScale;
+        newScale.y = wallHeight;
+        wall.transform.localScale = newScale;
     }
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)

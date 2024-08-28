@@ -9,6 +9,8 @@ TagManager:
   - Coffin
   - Treasure
   - Bookcase
+  - Altar
+  - Cross
   layers:
   - Default
   - TransparentFX

@@ -70,9 +70,25 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteAltarAndCrosses()
+    {
+        GameObject[] altars = GameObject.FindGameObjectsWithTag("Altar");
+        foreach (GameObject altar in altars)
+        {
+            DestroyImmediate(altar);
+        }
+
+        GameObject[] crosses = GameObject.FindGameObjectsWithTag("Cross");
+        foreach (GameObject cross in crosses)
+        {
+            DestroyImmediate(cross);
+        }
+    }
+
     public void CreateDungeon()
     {
         DeleteAllCoffins();
+        DeleteAltarAndCrosses();
         DeleteAllTreasure();
         DeleteAllBooks();
         DeleteAllEnemies();

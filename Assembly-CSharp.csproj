@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\CorridorsGenerator.cs" />
     <Compile Include="Assets\Scripts\BinarySpacePartitioner.cs" />
     <Compile Include="Assets\Scripts\GraveyardPrefabManager.cs" />
+    <Compile Include="Assets\Scripts\AltarRoomPrefabManager.cs" />
     <Compile Include="Assets\Scripts\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\StructureHelper.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />

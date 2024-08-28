@@ -18,6 +18,7 @@ public class RoomTypeAssigner : MonoBehaviour
     private TreasureRoomPrefabManager treasureRoomManager;
     private LibraryRoomPrefabManager libroomPrefabManager;
     private AltarRoomPrefabManager altarRoomPrefabManager;
+    private TrapdoorPlacer trapdoorPlacer;
     public void AssignRoomTypes(DungeonCreator dungeonCreator)
     {
         Debug.Log("Here");
@@ -45,6 +46,16 @@ public class RoomTypeAssigner : MonoBehaviour
             RoomType.AltarRoom,
             RoomType.GraveyardRoom
         };
+
+        trapdoorPlacer = FindObjectOfType<TrapdoorPlacer>();
+        if (trapdoorPlacer != null)
+        {
+            trapdoorPlacer.PlaceTrapdoorInLastRoom(rooms);
+        }
+        else
+        {
+            Debug.LogError("TrapdoorPlacer is not assigned.");
+        }
 
         // Assign the required room types to the rooms in order
         int roomIndex = 1; // Start from the second room
@@ -94,7 +105,7 @@ public class RoomTypeAssigner : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TreasureRoomPrefabManager is not assigned.");
+            Debug.LogError("LibraryRoomPrefabManager is not assigned.");
         }
 
         altarRoomPrefabManager = FindObjectOfType<AltarRoomPrefabManager>();
@@ -104,9 +115,10 @@ public class RoomTypeAssigner : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TreasureRoomPrefabManager is not assigned.");
+            Debug.LogError("AltarRoomPrefabManager is not assigned.");
         }
 
+        
 
         // Debug log to verify the assignment
         foreach (var room in rooms)

@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\CorridorNode.cs" />
     <Compile Include="Assets\Scripts\RoomGenerator.cs" />
+    <Compile Include="Assets\Scripts\TrapdoorPlacer.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
   </ItemGroup>
   <ItemGroup>

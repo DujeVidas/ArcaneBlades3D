@@ -11,6 +11,7 @@ TagManager:
   - Bookcase
   - Altar
   - Cross
+  - Trapdoor
   layers:
   - Default
   - TransparentFX

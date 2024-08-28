@@ -85,8 +85,18 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteTrapdoor()
+    {
+        GameObject[] trapdoors = GameObject.FindGameObjectsWithTag("Trapdoor");
+        foreach (GameObject trapdoor in trapdoors)
+        {
+            DestroyImmediate(trapdoor);
+        }
+    }
+
     public void CreateDungeon()
     {
+        DeleteTrapdoor();
         DeleteAllCoffins();
         DeleteAltarAndCrosses();
         DeleteAllTreasure();

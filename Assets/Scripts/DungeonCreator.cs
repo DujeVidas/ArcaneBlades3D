@@ -9,6 +9,8 @@ public class DungeonCreator : MonoBehaviour
     public int roomWidthMin, roomLengthMin;
     public float wallHeight = 3.0f;
     public int maxIterations;
+    public Rigidbody playerBody;
+    public PhysicMaterial floorPhysicMaterial;
     public int corridorWidth;
     public Material material;
     [Range(0.0f, 0.3f)]
@@ -139,6 +141,10 @@ public class DungeonCreator : MonoBehaviour
         }
         CreateWalls(wallParent);
 
+        Vector2 firstRoomCenter = listOfRooms[0].CalculateCenter();
+        Vector3 firstRoomCenter3D = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
+        playerBody.transform.position = firstRoomCenter3D;
+
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
         enemyGenerator.GenerateEnemiesInRooms(RoomNodes,dungeonLength,dungeonWidth);
 
@@ -209,6 +215,10 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
         dungeonFloor.transform.parent = transform;
+
+        MeshCollider meshCollider = dungeonFloor.AddComponent<MeshCollider>();
+        meshCollider.material = floorPhysicMaterial;
+        meshCollider.sharedMesh = mesh;
 
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
         {

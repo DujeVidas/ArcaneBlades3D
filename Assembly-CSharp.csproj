@@ -74,8 +74,10 @@
     <Compile Include="Assets\Scripts\StructureHelper.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\CorridorNode.cs" />
+    <Compile Include="Assets\Boss_Run.cs" />
     <Compile Include="Assets\Scripts\RoomGenerator.cs" />
     <Compile Include="Assets\Scripts\TrapdoorPlacer.cs" />
+    <Compile Include="Assets\Boss.cs" />
     <Compile Include="Assets\Scripts\Line.cs" />
   </ItemGroup>
   <ItemGroup>

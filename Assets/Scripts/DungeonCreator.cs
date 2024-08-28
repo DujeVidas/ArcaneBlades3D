@@ -129,7 +129,7 @@ public class DungeonCreator : MonoBehaviour
         CreateWalls(wallParent);
 
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
-        enemyGenerator.GenerateEnemiesInRooms(listOfRooms,dungeonLength,dungeonWidth);
+        enemyGenerator.GenerateEnemiesInRooms(RoomNodes,dungeonLength,dungeonWidth);
 
         RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();
         roomTypeAssigner.AssignRoomTypes(this);

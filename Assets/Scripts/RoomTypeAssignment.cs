@@ -39,8 +39,8 @@ public class RoomTypeAssigner : MonoBehaviour
         List<RoomType> requiredRoomTypes = new List<RoomType>
         {
             RoomType.TreasureRoom,
-            RoomType.TrapRoom,
-            RoomType.TrapRoom,
+            RoomType.TreasureRoom,
+            RoomType.LibraryRoom,
             RoomType.LibraryRoom,
             RoomType.AltarRoom,
             RoomType.GraveyardRoom
@@ -106,6 +106,7 @@ public class RoomTypeAssigner : MonoBehaviour
         {
             Debug.LogError("TreasureRoomPrefabManager is not assigned.");
         }
+
 
         // Debug log to verify the assignment
         foreach (var room in rooms)

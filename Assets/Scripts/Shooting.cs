@@ -9,6 +9,7 @@ public class Shooting : MonoBehaviour
     public float maxDistance = 100f;
     public GameObject decalPrefab;
     public int maxDecals = 10;
+    public float bulletDamage = 1;
 
     private List<GameObject> instantiatedDecals = new List<GameObject>();
     // Start is called before the first frame update
@@ -34,7 +35,7 @@ public class Shooting : MonoBehaviour
             InstantiateDecal(rayHit.point, rayHit.normal, rayHit.transform);
             if (rayHit.collider.gameObject.TryGetComponent(out ShootableObject shotObject))
             {
-                shotObject.TakeShot();
+                shotObject.TakeShot(bulletDamage);
             }
         }
     }

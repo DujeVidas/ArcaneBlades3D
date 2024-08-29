@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public float normalMoveSpeed = 50f;
+    public float sprintSpeed = 75f;
     public float moveSpeed = 20f;
     public float maxSpeed = 30f;
     public float rotateSpeed = 8f;
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        moveSpeed = normalMoveSpeed;
     }
 
     void Update()
@@ -52,6 +55,15 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = sprintSpeed;
+        }
+        else
+        {
+            moveSpeed = normalMoveSpeed;
+        }
+
         // Update player position
         if (rb.velocity.magnitude < maxSpeed)
         {

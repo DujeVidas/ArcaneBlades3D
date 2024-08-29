@@ -571,7 +571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 500
-  currentHealth: 0
+  currentHealth: 20
   animator: {fileID: 1344672055}
 --- !u!95 &1344672055 stripped
 Animator:

@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 10f;
     public Animator animator;
     public Camera playerCamera;
-    public TMPro.TMP_Text velocityText;
 
     private Vector3 moveDirection;
     private Rigidbody rb;
@@ -53,7 +52,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        velocityText.text = System.Math.Round(rb.velocity.magnitude, 2).ToString();
         // Update player position
         if (rb.velocity.magnitude < maxSpeed)
         {

@@ -7,11 +7,12 @@ public class DungeonCreator : MonoBehaviour
 {
     public int dungeonWidth, dungeonLength;
     public int roomWidthMin, roomLengthMin;
+    public float wallHeight = 3.0f;
     public int maxIterations;
-    public int corridorWidth;
     public Rigidbody playerBody;
-    public Material material;
     public PhysicMaterial floorPhysicMaterial;
+    public int corridorWidth;
+    public Material material;
     [Range(0.0f, 0.3f)]
     public float roomBottomCornerModifier;
     [Range(0.7f, 1.0f)]
@@ -23,11 +24,16 @@ public class DungeonCreator : MonoBehaviour
     List<Vector3Int> possibleDoorHorizontalPosition;
     List<Vector3Int> possibleWallHorizontalPosition;
     List<Vector3Int> possibleWallVerticalPosition;
+
+    public List<RoomNode> RoomNodes { get; private set; } = new List<RoomNode>();
+    public List<CorridorNode> CorridorNodes { get; private set; } = new List<CorridorNode>();
     // Start is called before the first frame update
     void Start()
     {
         
         CreateDungeon();
+
+        
     }
 
     void DeleteAllEnemies()
@@ -40,8 +46,64 @@ public class DungeonCreator : MonoBehaviour
         }
     }
 
+    void DeleteAllCoffins()
+    {
+        GameObject[] coffins = GameObject.FindGameObjectsWithTag("Coffin");
+        foreach (GameObject coffin in coffins)
+        {
+            DestroyImmediate(coffin);
+        }
+    }
+
+    void DeleteAllTreasure()
+    {
+        GameObject[] treasure = GameObject.FindGameObjectsWithTag("Treasure");
+        foreach (GameObject trea in treasure)
+        {
+            DestroyImmediate(trea);
+        }
+    }
+
+    void DeleteAllBooks()
+    {
+        GameObject[] books = GameObject.FindGameObjectsWithTag("Bookcase");
+        foreach (GameObject book in books)
+        {
+            DestroyImmediate(book);
+        }
+    }
+
+    void DeleteAltarAndCrosses()
+    {
+        GameObject[] altars = GameObject.FindGameObjectsWithTag("Altar");
+        foreach (GameObject altar in altars)
+        {
+            DestroyImmediate(altar);
+        }
+
+        GameObject[] crosses = GameObject.FindGameObjectsWithTag("Cross");
+        foreach (GameObject cross in crosses)
+        {
+            DestroyImmediate(cross);
+        }
+    }
+
+    void DeleteTrapdoor()
+    {
+        GameObject[] trapdoors = GameObject.FindGameObjectsWithTag("Trapdoor");
+        foreach (GameObject trapdoor in trapdoors)
+        {
+            DestroyImmediate(trapdoor);
+        }
+    }
+
     public void CreateDungeon()
     {
+        DeleteTrapdoor();
+        DeleteAllCoffins();
+        DeleteAltarAndCrosses();
+        DeleteAllTreasure();
+        DeleteAllBooks();
         DeleteAllEnemies();
         DestroyAllChildren();
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
@@ -52,6 +114,21 @@ public class DungeonCreator : MonoBehaviour
             roomTopCornerMidifier,
             roomOffset,
             corridorWidth);
+
+        RoomNodes.Clear();  // Clear the lists before adding new rooms and corridors
+        CorridorNodes.Clear();
+
+        foreach (var room in listOfRooms)
+        {
+            if (room is RoomNode)
+            {
+                RoomNodes.Add((RoomNode)room);
+            }
+            else if (room is CorridorNode)
+            {
+                CorridorNodes.Add((CorridorNode)room);
+            }
+        }
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
         possibleDoorVerticalPosition = new List<Vector3Int>();
@@ -67,27 +144,33 @@ public class DungeonCreator : MonoBehaviour
         Vector2 firstRoomCenter = listOfRooms[0].CalculateCenter();
         Vector3 firstRoomCenter3D = new Vector3(firstRoomCenter.x, 1, firstRoomCenter.y);
         playerBody.transform.position = firstRoomCenter3D;
-        //playerBody.transform.position = listOfRooms[0].BottomLeftAreaCorner;
 
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
-        enemyGenerator.GenerateEnemiesInRooms(listOfRooms,dungeonLength,dungeonWidth);
+        enemyGenerator.GenerateEnemiesInRooms(RoomNodes,dungeonLength,dungeonWidth);
+
+        RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();
+        roomTypeAssigner.AssignRoomTypes(this);
     }
 
     private void CreateWalls(GameObject wallParent)
     {
         foreach (var wallPosition in possibleWallHorizontalPosition)
         {
-            CreateWall(wallParent, wallPosition, wallHorizontal);
+            CreateWall(wallParent, wallPosition, wallHorizontal, wallHeight);
         }
         foreach (var wallPosition in possibleWallVerticalPosition)
         {
-            CreateWall(wallParent, wallPosition, wallVertical);
+            CreateWall(wallParent, wallPosition, wallVertical, wallHeight);
         }
     }
 
-    private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab)
+    private void CreateWall(GameObject wallParent, Vector3Int wallPosition, GameObject wallPrefab, float wallHeight)
     {
-        Instantiate(wallPrefab, wallPosition, Quaternion.identity, wallParent.transform);
+        GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity, wallParent.transform);
+
+        Vector3 newScale = wall.transform.localScale;
+        newScale.y = wallHeight;
+        wall.transform.localScale = newScale;
     }
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)

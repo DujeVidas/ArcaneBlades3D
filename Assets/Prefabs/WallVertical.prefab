@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6313812156255767766}
-  - component: {fileID: -3567463705003300236}
+  - component: {fileID: -5190849376267184174}
   m_Layer: 0
   m_Name: WallVertical
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 530127160956588528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &-3567463705003300236
+--- !u!65 &-5190849376267184174
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,8 +52,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0658184, y: 2.2295854, z: 1.0197558}
-  m_Center: {x: -0.02504994, y: 1.1053184, z: 0.4975922}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &530127160956717936
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3,24 +3,26 @@ using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    private List<Node> enemyRooms;
+    private List<RoomNode> enemyRooms;
     private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
     private float minDistanceBetweenEnemies = 1.0f; // Minimum distance between enemy spawns
 
-    public void GenerateEnemiesInRooms(List<Node> roomList, int dungeonLength, int dungeonWidth)
+    public void GenerateEnemiesInRooms(List<RoomNode> roomList, int dungeonLength, int dungeonWidth)
     {
         enemyRooms = roomList;
 
-        if (enemyRooms.Count < 2)
+        // Ensure there are enough rooms
+        if (enemyRooms.Count < 3) // Need at least 3 rooms to have enemies (excluding first and last)
         {
             Debug.LogWarning("Not enough rooms to generate enemies.");
             return;
         }
 
+        // Start from the second room and go until the second last room
         Node firstRoom = enemyRooms[0];
         Vector2 firstRoomCenter = firstRoom.CalculateCenter();
 
-        for (int i = 1; i < enemyRooms.Count; i++)
+        for (int i = 1; i < enemyRooms.Count - 1; i++)
         {
             Node currentRoom = enemyRooms[i];
             Vector2 currentRoomCenter = currentRoom.CalculateCenter();

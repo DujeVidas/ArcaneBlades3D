@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Cube
   - Enemy
+  - Coffin
+  - Treasure
+  - Bookcase
+  - Altar
+  - Cross
+  - Trapdoor
   layers:
   - Default
   - TransparentFX

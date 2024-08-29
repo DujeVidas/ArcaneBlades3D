@@ -20,6 +20,7 @@ public class DungeonCreator : MonoBehaviour
     [Range(0, 2)]
     public int roomOffset;
     public GameObject wallVertical, wallHorizontal;
+    public GameObject enemyPrefab;
     List<Vector3Int> possibleDoorVerticalPosition;
     List<Vector3Int> possibleDoorHorizontalPosition;
     List<Vector3Int> possibleWallHorizontalPosition;
@@ -146,6 +147,7 @@ public class DungeonCreator : MonoBehaviour
         playerBody.transform.position = firstRoomCenter3D;
 
         EnemyGenerator enemyGenerator = gameObject.AddComponent<EnemyGenerator>();
+        enemyGenerator.enemyPrefab = this.enemyPrefab;
         enemyGenerator.GenerateEnemiesInRooms(RoomNodes,dungeonLength,dungeonWidth);
 
         RoomTypeAssigner roomTypeAssigner = new RoomTypeAssigner();

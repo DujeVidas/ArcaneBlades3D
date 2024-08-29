@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
 {
+    public GameObject enemyPrefab;
     private List<RoomNode> enemyRooms;
     private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
     private float minDistanceBetweenEnemies = 1.0f; // Minimum distance between enemy spawns
@@ -55,7 +56,7 @@ public class EnemyGenerator : MonoBehaviour
             Vector3 spawnPosition = GetValidSpawnPosition(room.BottomLeftAreaCorner, room.TopRightAreaCorner);
 
             // Create an enemy at the spawn position
-            GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Capsule); // Replace with actual enemy prefab
+            GameObject enemy = Instantiate(enemyPrefab); // Replace with actual enemy prefab
             enemy.name = "Enemy";
             enemy.tag = "Enemy"; // Adjust tag as necessary
             enemy.transform.position = spawnPosition;

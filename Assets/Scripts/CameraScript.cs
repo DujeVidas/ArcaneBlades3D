@@ -14,6 +14,7 @@ public class CameraScript : MonoBehaviour
     {
         // Lock the cursor to the center of the screen and make it invisible
         Cursor.lockState = CursorLockMode.Locked;
+        mouseSensitivity = GamePreferences.sensitivity;
     }
 
     // Update is called once per frame

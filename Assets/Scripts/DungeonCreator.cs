@@ -13,6 +13,7 @@ public class DungeonCreator : MonoBehaviour
     public PhysicMaterial floorPhysicMaterial;
     public int corridorWidth;
     public Material material;
+    public Material ceilingMaterial;
     [Range(0.0f, 0.3f)]
     public float roomBottomCornerModifier;
     [Range(0.7f, 1.0f)]
@@ -221,6 +222,42 @@ public class DungeonCreator : MonoBehaviour
         MeshCollider meshCollider = dungeonFloor.AddComponent<MeshCollider>();
         meshCollider.material = floorPhysicMaterial;
         meshCollider.sharedMesh = mesh;
+
+        //same as above, but creates the ceiling of the room
+        Vector3 ceilingOffset = new Vector3(0, 2 * wallHeight, 0);
+        Vector3[] ceilingVertices = new Vector3[]
+        {
+            topLeftV + ceilingOffset,
+            topRightV + ceilingOffset,
+            bottomLeftV + ceilingOffset,
+            bottomRightV + ceilingOffset
+        };
+
+        Vector2[] ceilingUvs = new Vector2[ceilingVertices.Length];
+        for (int i = 0; i < ceilingUvs.Length; i++)
+        {
+            ceilingUvs[i] = new Vector2(ceilingVertices[i].x, ceilingVertices[i].z);
+        }
+
+        Mesh ceilingMesh = new Mesh();
+        ceilingMesh.vertices = ceilingVertices;
+        ceilingMesh.uv = ceilingUvs;
+        ceilingMesh.triangles = triangles;
+
+        GameObject dungeonCeiling = new GameObject("Mesh" + bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+
+        dungeonCeiling.transform.position = Vector3.zero;
+        dungeonCeiling.transform.localScale = Vector3.one;
+        dungeonCeiling.GetComponent<MeshFilter>().mesh = ceilingMesh;
+        dungeonCeiling.GetComponent<MeshRenderer>().material = ceilingMaterial;
+        dungeonCeiling.transform.parent = transform;
+
+        Vector3 center = new Vector3((topLeftV.x + topRightV.x) / 2, 2 * wallHeight, (topLeftV.z + bottomLeftV.z) / 2);
+        dungeonCeiling.transform.RotateAround(center, Vector3.right, 180);
+
+        MeshCollider ceilingMeshCollider = dungeonFloor.AddComponent<MeshCollider>();
+        ceilingMeshCollider.material = floorPhysicMaterial;
+        ceilingMeshCollider.sharedMesh = mesh;
 
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
         {

@@ -1,91 +1,134 @@
 using System.Collections;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public float normalMoveSpeed = 50f;
-    public float sprintSpeed = 75f;
-    public float moveSpeed = 20f;
-    public float maxSpeed = 30f;
-    public float rotateSpeed = 8f;
-    public LayerMask groundLayerMask;
-    public float jumpForce = 10f;
-    public Animator animator;
-    public Camera playerCamera;
+    [Header("Movement")]
+    public float moveSpeed = 12;
+    public float groundDrag = 5;
+    public float jumpForce = 10;
+    public float jumpCooldown = 0.5f;
+    public float airMultiplier = 0.4f;
+    bool readyToJump;
 
-    private Vector3 moveDirection;
-    private Rigidbody rb;
-    private Vector3 lookDirection;
+    [Header("Keybinds")]
+    public KeyCode jumpKey = KeyCode.Space;
 
+    [Header("Ground Check")]
+    public float playerHeight;
+    public LayerMask whatIsGround;
+    bool grounded;
+
+    public Transform orientation;
+
+    float horizontalInput;
+    float verticalInput;
+    Vector3 moveDirection;
+
+    Rigidbody rb;
+
+    [Header("Player Stats")]
     public int health = 100;
     private bool isStunned = false;
     private float stunEndTime = 0f;
+    public Animator animator;
+    public Camera playerCamera;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        moveSpeed = normalMoveSpeed;
+        rb.freezeRotation = true;
+
+        readyToJump = true;
     }
 
-    void Update()
+    private void Update()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        // ground check
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
-        Vector3 cameraForward = playerCamera.transform.forward;
-        Vector3 cameraRight = playerCamera.transform.right;
+        MyInput();
+        SpeedControl();
 
-        cameraForward.y = 0;
-        cameraRight.y = 0;
-
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-        moveDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
-        moveDirection.Normalize();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            moveSpeed = sprintSpeed;
-        }
+        // handle drag
+        if (grounded)
+            rb.drag = groundDrag;
         else
-        {
-            moveSpeed = normalMoveSpeed;
-        }
+            rb.drag = 0;
 
-        if (rb.velocity.magnitude < maxSpeed)
+        // Recover from stun if stun duration has passed
+        if (isStunned && Time.time >= stunEndTime)
         {
-            rb.AddForce(moveDirection * moveSpeed);
+            RecoverFromStun();
         }
+    }
 
-        if (Physics.Raycast(transform.position - transform.up * 0.95f, transform.forward, 1f, groundLayerMask))
+    private void FixedUpdate()
+    {
+        if (!isStunned) // Only move the player if not stunned
         {
-            rb.AddForce(Vector3.up * moveSpeed * 0.4f);
+            MovePlayer();
+        }
+    }
+
+    private void MyInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        // when to jump
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        {
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
+
+    private void MovePlayer()
+    {
+        // calculate movement direction
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        // on ground
+        if (grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+        // in air
+        else if (!grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+    }
+
+    private void SpeedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        // limit velocity if needed
+        if (flatVel.magnitude > moveSpeed)
+        {
+            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
     private void Jump()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, 1.01f, groundLayerMask))
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-        else
-        {
-            Debug.Log("ground not detected");
-        }
+        // reset y velocity
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
+    private void ResetJump()
+    {
+        readyToJump = true;
+    }
 
+    // Health and Combat Methods
 
     public void Stun(float duration)
     {
@@ -136,9 +179,8 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Die"); // Play death animation if available
         }
-        
+
         // Optionally disable player controls or show a game over screen
         this.enabled = false; // Disables the PlayerController script
     }
-
 }

@@ -59,13 +59,13 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 1.75
   m_Direction: 1
   m_Center: {x: 0, y: -0.25, z: 0}
@@ -144,13 +144,13 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &8759108759775029982
 MonoBehaviour:
@@ -164,21 +164,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3418183bceff5df79b056b7b3cfb7e4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolSpeed: 1.5
+  groundDrag: 5
+  airMultiplier: 0.4
+  patrolSpeed: 4
   chaseSpeed: 7
-  maxSpeed: 7
   patrolInterval: 5
-  chaseRange: 50
-  attackRange: 2
   leapCooldownMin: 8
   leapCooldownMax: 10
-  leapForce: 15
-  leapVerticalForce: 1
+  leapVerticalForce: 10
   stunDuration: 1
   damage: 10
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1
+  playerHeight: 2
+  chaseRange: 50
+  attackRange: 2
+  leapForce: 25
 --- !u!1001 &8948446491002679685
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -217,15 +222,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d444633021854cc4eb2ada548c5b7dd6, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d444633021854cc4eb2ada548c5b7dd6, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d444633021854cc4eb2ada548c5b7dd6, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d444633021854cc4eb2ada548c5b7dd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

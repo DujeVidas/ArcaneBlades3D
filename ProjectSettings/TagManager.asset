@@ -12,6 +12,7 @@ TagManager:
   - Altar
   - Cross
   - Trapdoor
+  - Floor
   layers:
   - Default
   - TransparentFX

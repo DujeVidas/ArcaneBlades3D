@@ -131,15 +131,21 @@ public class DungeonCreator : MonoBehaviour
                 CorridorNodes.Add((CorridorNode)room);
             }
         }
+        // Create Wall Parent
         GameObject wallParent = new GameObject("WallParent");
         wallParent.transform.parent = transform;
+
+        // Create Floor Parent
+        GameObject floorParent = new GameObject("FloorParent");
+        floorParent.transform.parent = transform;
+
         possibleDoorVerticalPosition = new List<Vector3Int>();
         possibleDoorHorizontalPosition = new List<Vector3Int>();
         possibleWallHorizontalPosition = new List<Vector3Int>();
         possibleWallVerticalPosition = new List<Vector3Int>();
         for (int i = 0; i < listOfRooms.Count; i++)
         {
-            CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
+            CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner, floorParent);
         }
         CreateWalls(wallParent);
 
@@ -176,7 +182,7 @@ public class DungeonCreator : MonoBehaviour
         wall.transform.localScale = newScale;
     }
 
-    private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
+private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner, GameObject floorParent)
     {
         Vector3 bottomLeftV = new Vector3(bottomLeftCorner.x, 0, bottomLeftCorner.y);
         Vector3 bottomRightV = new Vector3(topRightCorner.x, 0, bottomLeftCorner.y);
@@ -217,7 +223,11 @@ public class DungeonCreator : MonoBehaviour
         dungeonFloor.transform.localScale = Vector3.one;
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
-        dungeonFloor.transform.parent = transform;
+        
+        // Set the tag and parent of the dungeon floor
+        dungeonFloor.tag = "Floor";
+        // Set the parent of the dungeon floor to floorParent
+        dungeonFloor.transform.parent = floorParent.transform;
 
         MeshCollider meshCollider = dungeonFloor.AddComponent<MeshCollider>();
         meshCollider.material = floorPhysicMaterial;
@@ -255,7 +265,7 @@ public class DungeonCreator : MonoBehaviour
         Vector3 center = new Vector3((topLeftV.x + topRightV.x) / 2, 2 * wallHeight, (topLeftV.z + bottomLeftV.z) / 2);
         dungeonCeiling.transform.RotateAround(center, Vector3.right, 180);
 
-        MeshCollider ceilingMeshCollider = dungeonFloor.AddComponent<MeshCollider>();
+        MeshCollider ceilingMeshCollider = dungeonCeiling.AddComponent<MeshCollider>();
         ceilingMeshCollider.material = floorPhysicMaterial;
         ceilingMeshCollider.sharedMesh = mesh;
 

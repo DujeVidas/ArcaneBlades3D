@@ -12,6 +12,7 @@ public class Shooting : MonoBehaviour
     public int maxDecals = 10;
     public float bulletDamage = 1;
     public int magSize = 10;
+    public ParticleSystem muzzleFlash;
     private int bulletsLeft;
 
     public Animator animator;
@@ -58,6 +59,7 @@ public class Shooting : MonoBehaviour
 
     void Shoot()
     {
+        muzzleFlash.Play();
         Ray shotRay = new Ray(mainCamera.position, mainCamera.forward);
         if (Physics.Raycast(shotRay, out RaycastHit rayHit, maxDistance))
         {

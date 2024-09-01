@@ -40,6 +40,6 @@ public class BossHealth : MonoBehaviour
     {
         Debug.Log("Boss is dead!");
         // Add logic for what happens when the boss dies (e.g., play animation, disable the boss, etc.)
-        //animator.SetBool("IsDead", true); // Optionally set a death boolean
+        animator.SetBool("Dead", true);
     }
 }

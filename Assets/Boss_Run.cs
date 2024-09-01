@@ -6,7 +6,7 @@ public class Boss_Run : StateMachineBehaviour
     Transform player;
     Rigidbody rb;
     public float speed = 0.5f;
-    public float attackRange = 2.3f;
+    public float attackRange = 1.5f;
     public float attackDelay = 1.0f; // Time in seconds to wait between attacks
 
     Boss boss;

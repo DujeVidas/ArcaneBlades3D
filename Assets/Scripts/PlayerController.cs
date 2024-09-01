@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 lookDirection;
 
+    public int health = 100;
+    private bool isStunned = false;
+    private float stunEndTime = 0f;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -80,4 +84,61 @@ public class PlayerController : MonoBehaviour
             Debug.Log("ground not detected");
         }
     }
+
+
+
+    public void Stun(float duration)
+    {
+        isStunned = true;
+        stunEndTime = Time.time + duration;
+        rb.velocity = Vector3.zero; // Stop player movement
+        Debug.Log("Player stunned for " + duration + " seconds");
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Stunned"); // Play stun animation if available
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        Debug.Log("Player took " + damage + " damage, remaining health: " + health);
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Damaged"); // Play damaged animation if available
+        }
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void RecoverFromStun()
+    {
+        isStunned = false;
+        Debug.Log("Player recovered from stun.");
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Recover"); // Play recover animation if available
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player died.");
+        // Handle player death (e.g., trigger game over, respawn, etc.)
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Die"); // Play death animation if available
+        }
+        
+        // Optionally disable player controls or show a game over screen
+        this.enabled = false; // Disables the PlayerController script
+    }
+
 }

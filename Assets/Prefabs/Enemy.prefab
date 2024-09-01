@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5515167105711183825}
   - component: {fileID: 1152659299194524486}
   - component: {fileID: -6724732487024750265}
+  - component: {fileID: 8280251335201143505}
+  - component: {fileID: 8759108759775029982}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -120,3 +122,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756740ecd79cc784186f36aa30decb3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 5
+  destroyOnDeath: 1
+--- !u!54 &8280251335201143505
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6532240488462877453}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
+--- !u!114 &8759108759775029982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6532240488462877453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3418183bceff5df79b056b7b3cfb7e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  patrolSpeed: 1.5
+  chaseSpeed: 7
+  maxSpeed: 7
+  patrolInterval: 5
+  chaseRange: 50
+  attackRange: 2
+  leapCooldownMin: 8
+  leapCooldownMax: 10
+  leapForce: 15
+  leapVerticalForce: 1
+  stunDuration: 1
+  damage: 10
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0

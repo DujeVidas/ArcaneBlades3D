@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public Camera playerCamera;
 
+    [Header("Misc")]
+    public UI uiManager;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -182,5 +185,14 @@ public class PlayerController : MonoBehaviour
 
         // Optionally disable player controls or show a game over screen
         this.enabled = false; // Disables the PlayerController script
+        uiManager.Death();
+    }
+
+    public void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(1);
+        }
     }
 }

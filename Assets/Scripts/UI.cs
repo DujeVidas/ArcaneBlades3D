@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour
 {
     public GameObject pause;
+    public GameObject deathScreen;
+    public PlayerController player;
+    //tmpro text
+    public TextMeshProUGUI healthText;
     private bool isPaused;
     // Start is called before the first frame update
     void Start()
     {
         isPaused = false;
         pause.SetActive(false);
+        deathScreen.SetActive(false);
+        healthText.SetText("HP: " + player.health.ToString());
         Time.timeScale = 1f;
     }
 
@@ -29,6 +36,8 @@ public class UI : MonoBehaviour
                 Pause();
             }
         }
+
+        healthText.SetText("HP: " + player.health.ToString());
     }
     public void Resume()
     {
@@ -47,13 +56,20 @@ public class UI : MonoBehaviour
         isPaused = true;
     }
 
-    /*
+    public void Death()
+    {
+        deathScreen.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+
     public void Retry()
     {
-        LevelManager.score = 0;
-        LevelManager.level = 0;
+        //LevelManager.score = 0;
+        //LevelManager.level = 0;
         SceneManager.LoadScene(1);
-    */
+    }
 
     public void ReturnToMain()
     {

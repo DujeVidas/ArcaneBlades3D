@@ -644,6 +644,7 @@ MonoBehaviour:
   decalPrefab: {fileID: 4074323730123138207, guid: 3541e74f04eb06e49a8cd5d1afe29ac3, type: 3}
   maxDecals: 10
   bulletDamage: 1
+  animator: {fileID: 0}
   uiManager: {fileID: 0}
 --- !u!54 &963959159
 Rigidbody:
@@ -684,18 +685,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e238022b5673ded4094b0d682849099a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMoveSpeed: 100
-  sprintSpeed: 150
   moveSpeed: 100
-  maxSpeed: 50
-  rotateSpeed: 16
-  groundLayerMask:
+  groundDrag: 5
+  jumpForce: 10
+  jumpCooldown: 0.5
+  airMultiplier: 0.4
+  jumpKey: 32
+  playerHeight: 2
+  whatIsGround:
     serializedVersion: 2
     m_Bits: 1
-  jumpForce: 10
+  orientation: {fileID: 963959164}
+  health: 100
   animator: {fileID: 0}
   playerCamera: {fileID: 946709998}
-  health: 100
+  uiManager: {fileID: 0}
 --- !u!136 &963959161
 CapsuleCollider:
   m_ObjectHideFlags: 0

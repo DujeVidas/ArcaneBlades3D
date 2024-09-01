@@ -262,12 +262,13 @@ private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner, GameOb
         dungeonCeiling.GetComponent<MeshRenderer>().material = ceilingMaterial;
         dungeonCeiling.transform.parent = transform;
 
+
         Vector3 center = new Vector3((topLeftV.x + topRightV.x) / 2, 2 * wallHeight, (topLeftV.z + bottomLeftV.z) / 2);
         dungeonCeiling.transform.RotateAround(center, Vector3.right, 180);
 
         MeshCollider ceilingMeshCollider = dungeonCeiling.AddComponent<MeshCollider>();
         ceilingMeshCollider.material = floorPhysicMaterial;
-        ceilingMeshCollider.sharedMesh = mesh;
+        ceilingMeshCollider.sharedMesh = ceilingMesh;
 
         for (int row = (int)bottomLeftV.x; row < (int)bottomRightV.x; row++)
         {

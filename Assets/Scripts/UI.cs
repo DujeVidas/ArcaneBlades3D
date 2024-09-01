@@ -11,6 +11,7 @@ public class UI : MonoBehaviour
     public PlayerController player;
     //tmpro text
     public TextMeshProUGUI healthText;
+    public TextMeshProUGUI bulletsText;
     private bool isPaused;
     // Start is called before the first frame update
     void Start()
@@ -82,5 +83,10 @@ public class UI : MonoBehaviour
     public bool IsGamePaused()
     {
         return isPaused;
+    }
+
+    public void SetBulletsText(int bullets, int magSize)
+    {
+        bulletsText.SetText("Ammo: " + bullets.ToString() + "/" + magSize.ToString());
     }
 }

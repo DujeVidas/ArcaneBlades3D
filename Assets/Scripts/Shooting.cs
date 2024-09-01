@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,15 @@ public class Shooting : MonoBehaviour
     public GameObject decalPrefab;
     public int maxDecals = 10;
     public float bulletDamage = 1;
+    public int magSize = 10;
+    private int bulletsLeft;
 
     public Animator animator;
     public GameObject uiManager; // Reference to the UI script
     private UI ui; // Reference to the UI component
 
     private List<GameObject> instantiatedDecals = new List<GameObject>();
+    private bool canShoot = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,11 +27,13 @@ public class Shooting : MonoBehaviour
         {
             ui = uiManager.GetComponent<UI>();
         }
+        bulletsLeft = magSize;
+        ui.SetBulletsText(bulletsLeft, magSize);
     }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused())
+        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused() && bulletsLeft > 0 && canShoot)
         {
             Shoot();
         }
@@ -35,8 +41,19 @@ public class Shooting : MonoBehaviour
         //start reload animation if R is pressed
         if (Input.GetKeyDown(KeyCode.R))
         {
-            animator.SetTrigger("Reload");
+            canShoot = false;
+            //wait for the reload animation to finish
+            StartCoroutine(WaitForReload());
         }
+    }
+
+    IEnumerator WaitForReload()
+    {
+        animator.SetTrigger("Reload");
+        yield return new WaitForSeconds(1.5f);
+        bulletsLeft = magSize;
+        ui.SetBulletsText(bulletsLeft, magSize);
+        canShoot = true;
     }
 
     void Shoot()
@@ -50,6 +67,8 @@ public class Shooting : MonoBehaviour
                 shotObject.TakeShot(bulletDamage);
             }
         }
+        bulletsLeft--;
+        ui.SetBulletsText(bulletsLeft, magSize);
     }
 
     void InstantiateDecal(Vector3 position, Vector3 normal, Transform hitTransform)
@@ -89,5 +108,10 @@ public class Shooting : MonoBehaviour
                 Destroy(decal); // Destroy the GameObject
             }
         }
+    }
+
+    public int GetBulletsLeft()
+    {
+        return bulletsLeft;
     }
 }

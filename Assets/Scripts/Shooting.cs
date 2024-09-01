@@ -11,6 +11,7 @@ public class Shooting : MonoBehaviour
     public int maxDecals = 10;
     public float bulletDamage = 1;
 
+    public Animator animator;
     public GameObject uiManager; // Reference to the UI script
     private UI ui; // Reference to the UI component
 
@@ -30,12 +31,18 @@ public class Shooting : MonoBehaviour
         {
             Shoot();
         }
+
+        //start reload animation if R is pressed
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            animator.SetTrigger("Reload");
+        }
     }
 
     void Shoot()
     {
         Ray shotRay = new Ray(mainCamera.position, mainCamera.forward);
-        if(Physics.Raycast(shotRay, out RaycastHit rayHit, maxDistance))
+        if (Physics.Raycast(shotRay, out RaycastHit rayHit, maxDistance))
         {
             InstantiateDecal(rayHit.point, rayHit.normal, rayHit.transform);
             if (rayHit.collider.gameObject.TryGetComponent(out ShootableObject shotObject))

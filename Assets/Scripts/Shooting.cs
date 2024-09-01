@@ -68,6 +68,10 @@ public class Shooting : MonoBehaviour
             {
                 shotObject.TakeShot(bulletDamage);
             }
+            else if (rayHit.collider.gameObject.TryGetComponent(out BossHealth bossHealth))
+            {
+                bossHealth.TakeDamage(10);
+            }
         }
         bulletsLeft--;
         ui.SetBulletsText(bulletsLeft, magSize);

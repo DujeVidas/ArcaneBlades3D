@@ -11,17 +11,22 @@ public class Shooting : MonoBehaviour
     public int maxDecals = 10;
     public float bulletDamage = 1;
 
+    public GameObject uiManager; // Reference to the UI script
+    private UI ui; // Reference to the UI component
+
     private List<GameObject> instantiatedDecals = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (uiManager != null)
+        {
+            ui = uiManager.GetComponent<UI>();
+        }
     }
-
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused())
         {
             Shoot();
         }

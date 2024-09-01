@@ -6,9 +6,11 @@ using UnityEngine.SceneManagement;
 public class UI : MonoBehaviour
 {
     public GameObject pause;
+    private bool isPaused;
     // Start is called before the first frame update
     void Start()
     {
+        isPaused = false;
         pause.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -33,6 +35,8 @@ public class UI : MonoBehaviour
         pause.SetActive(false);
         Time.timeScale = 1.0f;
         Cursor.lockState = CursorLockMode.Locked;
+        isPaused = false;
+
     }
 
     public void Pause()
@@ -40,6 +44,7 @@ public class UI : MonoBehaviour
         pause.SetActive(true);
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
+        isPaused = true;
     }
 
     /*
@@ -55,5 +60,11 @@ public class UI : MonoBehaviour
         //LevelManager.score = 0;
         //LevelManager.level = 0;
         SceneManager.LoadScene(0);
+    }
+
+        // This function should be called from other scripts to check if the game is paused
+    public bool IsGamePaused()
+    {
+        return isPaused;
     }
 }

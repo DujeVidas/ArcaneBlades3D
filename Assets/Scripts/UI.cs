@@ -13,6 +13,7 @@ public class UI : MonoBehaviour
     public TextMeshProUGUI healthText;
     public TextMeshProUGUI bulletsText;
     private bool isPaused;
+    private bool playerDead = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +39,11 @@ public class UI : MonoBehaviour
             }
         }
 
-        healthText.SetText("HP: " + player.health.ToString());
+        int health = player.health;
+        if (health < 0)
+            health = 0;
+
+        healthText.SetText("HP: " + health.ToString());
     }
     public void Resume()
     {
@@ -62,6 +67,7 @@ public class UI : MonoBehaviour
         deathScreen.SetActive(true);
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
+        playerDead = true;
     }
 
 
@@ -83,6 +89,11 @@ public class UI : MonoBehaviour
     public bool IsGamePaused()
     {
         return isPaused;
+    }
+
+    public bool IsPlayerDead()
+    {
+        return playerDead;
     }
 
     public void SetBulletsText(int bullets, int magSize)

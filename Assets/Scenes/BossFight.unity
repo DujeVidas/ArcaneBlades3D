@@ -538,6 +538,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2972386517271706047, guid: f8f0e3dd24c06394db4817bdd2899dff, type: 3}
+      propertyPath: intensity
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3289233805460238059, guid: f8f0e3dd24c06394db4817bdd2899dff, type: 3}
       propertyPath: uiManager
       value: 
@@ -598,6 +602,18 @@ PrefabInstance:
       propertyPath: uiManager
       value: 
       objectReference: {fileID: 897927392}
+    - target: {fileID: 8442991843482365989, guid: f8f0e3dd24c06394db4817bdd2899dff, type: 3}
+      propertyPath: lengthInSec
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442991843482365989, guid: f8f0e3dd24c06394db4817bdd2899dff, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442991843482365989, guid: f8f0e3dd24c06394db4817bdd2899dff, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -34,7 +34,8 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused() && bulletsLeft > 0 && canShoot)
+        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused() && bulletsLeft > 0 && canShoot
+            && !ui.IsPlayerDead())
         {
             Shoot();
         }

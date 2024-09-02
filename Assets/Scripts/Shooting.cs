@@ -16,11 +16,19 @@ public class Shooting : MonoBehaviour
     public AudioSource reloadSound;
 
     public Animator animator;
-    public UI uiManager; // Reference to the UIManager
+    public UI uiManager;
+    public PointerController pointerController; // Reference to the PointerController
+
     private bool canShoot = true;
     private bool canReload = true;
 
     private List<GameObject> instantiatedDecals = new List<GameObject>();
+
+    private float reloadTime = 1.5f;
+
+    private bool reloadInProgress = false; // To track if reload is happening
+    private bool reloadKeyPressed = false; // To track if 'R' key was pressed
+
 
     void Start()
     {
@@ -37,12 +45,22 @@ public class Shooting : MonoBehaviour
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && canReload)
+        if (Input.GetKeyDown(KeyCode.R) && canReload && !reloadInProgress)
         {
-            canShoot = false;
-            canReload = false;
-            StartCoroutine(WaitForReload());
+            StartReload();
         }
+        else if (Input.GetKeyDown(KeyCode.R) && reloadInProgress)
+        {
+            reloadKeyPressed = true; // Mark reload key as pressed for modification during reload
+        }
+    }
+
+    void StartReload()
+    {
+        reloadInProgress = true;
+        canShoot = false;
+        canReload = false;
+        StartCoroutine(WaitForReload());
     }
 
     IEnumerator WaitForReload()
@@ -50,22 +68,69 @@ public class Shooting : MonoBehaviour
         uiManager.SetReloadingUIActive(true);
         animator.SetTrigger("Reload");
         reloadSound.Play();
-        
-        float reloadTime = 1.5f; // Duration of the reload animation
+        pointerController.StartMoving(); // Start moving the pointer
+
+        reloadTime = 1.5f; // Duration of the reload animation
+        magSize = 10;
         float elapsed = 0f;
 
         while (elapsed < reloadTime)
         {
             elapsed += Time.deltaTime;
-            uiManager.UpdateReloadProgress(elapsed / reloadTime);
+            float progress = Mathf.Clamp01(elapsed / reloadTime);
+            uiManager.UpdateReloadProgress(progress);
+            pointerController.SetPointerPosition(progress); // Update pointer position
+
+            if (reloadKeyPressed) // Check if the reload key was pressed again
+            {
+                if (CheckSkillCheck(progress))
+                {
+                    magSize = 12; // Give extra bullets
+                    reloadTime = 0f; // Instant reload
+                }
+                else
+                {
+                    reloadTime = 2f; // Increase reload time by 30%
+                    magSize = Mathf.Min(bulletsLeft + 2, 8);
+                }
+                reloadKeyPressed = false; // Reset the flag
+                break;
+            }
+
             yield return null;
         }
 
+        while (elapsed < reloadTime)
+        {
+            elapsed += 0.1f; // Increment elapsed time
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // End the reload process
         bulletsLeft = magSize;
         uiManager.SetBulletsText(bulletsLeft, magSize);
         uiManager.SetReloadingUIActive(false);
+        pointerController.StopMoving(); // Stop the pointer
         canShoot = true;
         canReload = true;
+        reloadInProgress = false; // Reset the reload state
+    }
+
+    bool CheckSkillCheck(float progress)
+    {
+        // Check if the pointer is within the safe zone
+        if (RectTransformUtility.RectangleContainsScreenPoint(
+            pointerController.safeZone,
+            pointerController.GetComponent<RectTransform>().position, null))
+        {
+            Debug.Log("Success!");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Fail!");
+            return false;
+        }
     }
 
     void Shoot()

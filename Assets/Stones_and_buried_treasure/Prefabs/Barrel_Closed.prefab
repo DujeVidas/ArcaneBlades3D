@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4265579823906616}
   - component: {fileID: 33994498051060904}
   - component: {fileID: 23537517280915476}
+  - component: {fileID: 7844518462902235897}
   m_Layer: 0
   m_Name: Barrel_Closed
   m_TagString: Treasure
@@ -84,3 +85,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7844518462902235897
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471348280292084}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300060, guid: 5f3a7deba91ee3341b2266db1be8c0a0, type: 3}

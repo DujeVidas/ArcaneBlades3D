@@ -128,10 +128,10 @@ public class EnemyAI : MonoBehaviour
         if (Vector3.Distance(transform.position, patrolDestination) < 2.5f)
         {
             rb.velocity = Vector3.zero;
-            animator.SetBool("isMoving", false);
+            animator.SetBool("isChasing", false);
         }
         else {
-            animator.SetBool("isMoving", true);
+            animator.SetBool("isChasing", true);
         }
 
         if (Time.time >= nextPatrolTime)
@@ -152,7 +152,7 @@ public class EnemyAI : MonoBehaviour
 
     void ChasePlayer()
     {
-        animator.SetBool("isMoving", true);
+        animator.SetBool("isChasing", true);
 
         moveDirection = (player.position - transform.position).normalized;
 

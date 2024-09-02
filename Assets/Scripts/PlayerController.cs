@@ -38,9 +38,30 @@ public class PlayerController : MonoBehaviour
 
     [Header("Misc")]
     public UI uiManager;
+    private TakeDamageRedVFX damageEffectScript;
 
-    private void Start()
+    void Start()
     {
+                // Find the child GameObject named "PostProcessingGO"
+        Transform childTransform = transform.Find("PostProcessingGO");
+
+        // Ensure the child GameObject exists
+        if (childTransform != null)
+        {
+            // Get the TakeDamageRedVFX component from the child GameObject
+            damageEffectScript = childTransform.GetComponent<TakeDamageRedVFX>();
+
+            // Check if the component is found to avoid errors
+            if (damageEffectScript == null)
+            {
+                Debug.LogError("TakeDamageRedVFX component not found on the child GameObject.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Child GameObject 'PostProcessingGO' not found.");
+        }
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -148,8 +169,11 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        
         health -= damage;
         Debug.Log("Player took " + damage + " damage, remaining health: " + health);
+
+        damageEffectScript.TriggerTakeDamageEffect(health);
 
         if (animator != null)
         {

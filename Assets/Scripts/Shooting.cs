@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder;
 
 public class Shooting : MonoBehaviour
 {
@@ -18,48 +16,54 @@ public class Shooting : MonoBehaviour
     public AudioSource reloadSound;
 
     public Animator animator;
-    public GameObject uiManager; // Reference to the UI script
-    private UI ui; // Reference to the UI component
-
-    private List<GameObject> instantiatedDecals = new List<GameObject>();
+    public UI uiManager; // Reference to the UIManager
     private bool canShoot = true;
     private bool canReload = true;
-    // Start is called before the first frame update
+
+    private List<GameObject> instantiatedDecals = new List<GameObject>();
+
     void Start()
     {
-        if (uiManager != null)
-        {
-            ui = uiManager.GetComponent<UI>();
-        }
         bulletsLeft = magSize;
-        ui.SetBulletsText(bulletsLeft, magSize);
+        uiManager.SetReloadingUIActive(false); // Hide UI elements initially
+        uiManager.UpdateReloadProgress(0);
+        uiManager.SetBulletsText(bulletsLeft, magSize);
     }
-    // Update is called once per frame
+
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && !ui.IsGamePaused() && bulletsLeft > 0 && canShoot
-            && !ui.IsPlayerDead())
+        if (Input.GetButtonDown("Fire1") && bulletsLeft > 0 && canShoot)
         {
             Shoot();
         }
 
-        //start reload animation if R is pressed
         if (Input.GetKeyDown(KeyCode.R) && canReload)
         {
             canShoot = false;
             canReload = false;
-            //wait for the reload animation to finish
             StartCoroutine(WaitForReload());
         }
     }
 
     IEnumerator WaitForReload()
     {
+        uiManager.SetReloadingUIActive(true);
         animator.SetTrigger("Reload");
         reloadSound.Play();
-        yield return new WaitForSeconds(1.5f);
+        
+        float reloadTime = 1.5f; // Duration of the reload animation
+        float elapsed = 0f;
+
+        while (elapsed < reloadTime)
+        {
+            elapsed += Time.deltaTime;
+            uiManager.UpdateReloadProgress(elapsed / reloadTime);
+            yield return null;
+        }
+
         bulletsLeft = magSize;
-        ui.SetBulletsText(bulletsLeft, magSize);
+        uiManager.SetBulletsText(bulletsLeft, magSize);
+        uiManager.SetReloadingUIActive(false);
         canShoot = true;
         canReload = true;
     }
@@ -82,44 +86,29 @@ public class Shooting : MonoBehaviour
             }
         }
         bulletsLeft--;
-        ui.SetBulletsText(bulletsLeft, magSize);
+        uiManager.SetBulletsText(bulletsLeft, magSize);
     }
 
     void InstantiateDecal(Vector3 position, Vector3 normal, Transform hitTransform)
     {
-        // Determine the rotation to align with the surface
         Quaternion rotation = Quaternion.FromToRotation(Vector3.up, normal);
-
-        // Instantiate the decal prefab
         GameObject decal = Instantiate(decalPrefab, position, rotation);
-
-        // Adjust the decal's position slightly to prevent z-fighting
         decal.transform.position += normal * 0.01f;
-
-        // Parent the decal to the hit object to keep it in the correct position
         decal.transform.parent = hitTransform;
-
-        // Add the decal to the list of instantiated decals
         instantiatedDecals.Add(decal);
-
-        // Ensure that only the newest decals are kept
         RemoveOldDecals();
     }
 
     void RemoveOldDecals()
     {
-        // If the number of decals exceeds the maximum limit
         if (instantiatedDecals.Count > maxDecals)
         {
-            // Calculate the number of excess decals
             int excessDecals = instantiatedDecals.Count - maxDecals;
-
-            // Remove the oldest excess decals from the list and destroy them
             for (int i = 0; i < excessDecals; i++)
             {
-                GameObject decal = instantiatedDecals[0]; // Get the oldest decal
-                instantiatedDecals.RemoveAt(0); // Remove it from the list
-                Destroy(decal); // Destroy the GameObject
+                GameObject decal = instantiatedDecals[0];
+                instantiatedDecals.RemoveAt(0);
+                Destroy(decal);
             }
         }
     }

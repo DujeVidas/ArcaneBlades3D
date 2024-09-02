@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class UI : MonoBehaviour
     private bool isPaused;
     private bool playerDead = false;
     // Start is called before the first frame update
+
+
+    public Image progressBar;
+    public TextMeshProUGUI reloadText;
+
     void Start()
     {
         isPaused = false;
@@ -22,6 +28,8 @@ public class UI : MonoBehaviour
         deathScreen.SetActive(false);
         healthText.SetText("HP: " + player.health.ToString());
         Time.timeScale = 1f;
+        progressBar.gameObject.SetActive(false);
+        reloadText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -100,4 +108,16 @@ public class UI : MonoBehaviour
     {
         bulletsText.SetText("Ammo: " + bullets.ToString() + "/" + magSize.ToString());
     }
+
+        public void SetReloadingUIActive(bool isActive)
+    {
+        progressBar.gameObject.SetActive(isActive);
+        reloadText.gameObject.SetActive(isActive);
+    }
+
+    public void UpdateReloadProgress(float progress)
+    {
+        progressBar.fillAmount = progress;
+    }
+
 }

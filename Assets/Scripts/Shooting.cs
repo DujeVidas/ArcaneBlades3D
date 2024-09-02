@@ -91,7 +91,7 @@ public class Shooting : MonoBehaviour
                 else
                 {
                     reloadTime = 2f; // Increase reload time by 30%
-                    magSize = Mathf.Min(bulletsLeft + 2, 8);
+                    magSize = Mathf.Min(bulletsLeft + 5, 8);
                 }
                 reloadKeyPressed = false; // Reset the flag
                 break;

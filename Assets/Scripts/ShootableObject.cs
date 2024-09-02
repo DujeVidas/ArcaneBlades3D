@@ -33,7 +33,6 @@ public class ShootableObject : MonoBehaviour
         {
             Debug.LogError("EnemyAI component not found on this GameObject.");
         }
-
     }
 
     void Update()
@@ -61,8 +60,6 @@ public class ShootableObject : MonoBehaviour
         }
     }
 
-
-
     private IEnumerator DestroyAfterDelay(float delay)
     {
         // Wait for the specified delay
@@ -75,5 +72,11 @@ public class ShootableObject : MonoBehaviour
     public void TakeShot(float bulletDamage)
     {
         health -= bulletDamage;
+
+        // Set isChasing to true when the object takes a shot
+        if (enemyAI != null)
+        {
+            enemyAI.isChasing = true; // Change the chasing state to true
+        }
     }
 }

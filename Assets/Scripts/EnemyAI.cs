@@ -30,7 +30,7 @@ public class EnemyAI : MonoBehaviour
     private Rigidbody rb;
     private Vector3 moveDirection;
     private Vector3 patrolDestination;
-    private bool isChasing = false;
+    public bool isChasing = false;
     private bool isLeaping = false;
     private bool grounded;
     private float nextPatrolTime;

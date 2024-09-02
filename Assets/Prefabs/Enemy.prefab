@@ -152,7 +152,7 @@ MonoBehaviour:
   leapCooldownMax: 10
   leapVerticalForce: 8
   stunDuration: 1
-  damage: 10
+  damage: 15
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -164,7 +164,7 @@ MonoBehaviour:
   attackRange: 4
   leapForce: 10
   standStillDuration: 0.5
-  attackCooldown: 1.5
+  attackCooldown: 1
 --- !u!65 &8374607995652792426
 BoxCollider:
   m_ObjectHideFlags: 0

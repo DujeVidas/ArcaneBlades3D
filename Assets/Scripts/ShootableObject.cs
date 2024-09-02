@@ -23,7 +23,7 @@ public class ShootableObject : MonoBehaviour
             // Check if the component is found to avoid errors
             if (animator == null)
             {
-                Debug.LogError("Animator component not found on the child GameObject.");
+                Debug.Log("Animator component not found on the child GameObject.");
             }
         }
 
@@ -31,7 +31,7 @@ public class ShootableObject : MonoBehaviour
         enemyAI = GetComponent<EnemyAI>();
         if (enemyAI == null)
         {
-            Debug.LogError("EnemyAI component not found on this GameObject.");
+            Debug.Log("EnemyAI component not found on this GameObject.");
         }
     }
 

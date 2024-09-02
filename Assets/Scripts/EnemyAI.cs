@@ -112,6 +112,7 @@ public class EnemyAI : MonoBehaviour
 
     void Patrol()
     {
+
         moveDirection = (patrolDestination - transform.position).normalized;
 
         // Move towards the patrol destination
@@ -124,9 +125,13 @@ public class EnemyAI : MonoBehaviour
             rb.AddForce(moveDirection.normalized * patrolSpeed * 10f * airMultiplier, ForceMode.Force);
         }
 
-        if (Vector3.Distance(transform.position, patrolDestination) < 1f)
+        if (Vector3.Distance(transform.position, patrolDestination) < 2.5f)
         {
             rb.velocity = Vector3.zero;
+            animator.SetBool("isMoving", false);
+        }
+        else {
+            animator.SetBool("isMoving", true);
         }
 
         if (Time.time >= nextPatrolTime)
@@ -147,7 +152,7 @@ public class EnemyAI : MonoBehaviour
 
     void ChasePlayer()
     {
-        animator.SetBool("isChasing", true);
+        animator.SetBool("isMoving", true);
 
         moveDirection = (player.position - transform.position).normalized;
 
@@ -300,7 +305,7 @@ public class EnemyAI : MonoBehaviour
             Vector3 potentialPosition = new Vector3(randomCirclePoint.x, transform.position.y, randomCirclePoint.y) + patrolCenter;
 
             RaycastHit hit;
-            if (Physics.Raycast(potentialPosition + Vector3.up * 50f, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Default")))
+            if (Physics.Raycast(potentialPosition + Vector3.up * 50f, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Floor")))
             {
                 if (hit.collider.CompareTag("Floor"))
                 {

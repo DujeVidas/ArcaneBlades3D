@@ -23,6 +23,7 @@ public class EnemyAI : MonoBehaviour
     public float chaseRange = 50f;
     public float attackRange = 2f;
     public float leapForce = 35f;
+    public float standStillDuration = 1.5f; // Duration to stand still after a leap or attack
 
     private Transform player;
     private Rigidbody rb;
@@ -38,8 +39,27 @@ public class EnemyAI : MonoBehaviour
     private const float patrolRadius = 20f;
 
     private bool isPaused;
+    private Animator animator;
+
+    private bool isStandingStill = false; // New flag to check if standing still after leap or attack
+
     void Start()
     {
+        // Find the child GameObject named "Mremireh O Desbiens"
+        Transform childTransform = transform.Find("Mremireh O Desbiens");
+
+        // Ensure the child GameObject exists
+        if (childTransform != null)
+        {
+            // Get the Animator component from the child GameObject
+            animator = childTransform.GetComponent<Animator>();
+
+            // Check if the component is found to avoid errors
+            if (animator == null)
+            {
+                Debug.LogError("Animator component not found on the child GameObject.");
+            }
+        }
         rb = GetComponent<Rigidbody>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         nextPatrolTime = Time.time + patrolInterval;
@@ -50,10 +70,15 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if(Time.timeScale == 0f) isPaused = true; else isPaused = false;
-        if(isPaused) return;
+        if (Time.timeScale == 0f) isPaused = true; else isPaused = false;
+        if (isPaused) return;
         // Ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+
+        if (isStandingStill){
+            animator.SetTrigger("Idle");
+            return;
+        }  // Prevent movement or actions if standing still
 
         if (!isChasing)
         {
@@ -69,14 +94,14 @@ public class EnemyAI : MonoBehaviour
 
         RotateTowardsMovementDirection();
         SpeedControl();
-        
+
         // Handle drag
         rb.drag = grounded ? groundDrag : 0;
     }
 
     void FixedUpdate()
     {
-        if(isPaused) return;
+        if (isPaused || isStandingStill) return; // Prevent movement if standing still
         MoveEnemy();
     }
 
@@ -117,6 +142,8 @@ public class EnemyAI : MonoBehaviour
 
     void ChasePlayer()
     {
+        animator.SetBool("isChasing", true);
+
         moveDirection = (player.position - transform.position).normalized;
 
         if (grounded)
@@ -132,13 +159,36 @@ public class EnemyAI : MonoBehaviour
 
         if (distanceToPlayer <= 15f && Time.time >= nextLeapTime && !isLeaping && grounded)
         {
-            StartCoroutine(LeapTowardsPlayer());
+            StartCoroutine(DelayedLeap());
         }
 
         if (distanceToPlayer <= attackRange)
         {
-            AttackPlayer();
+            animator.SetTrigger("Attack");
+            StartCoroutine(AttackPlayerCoroutine());
         }
+    }
+
+        private IEnumerator DelayedLeap()
+    {
+        // Trigger the jump attack animation
+        animator.SetTrigger("JumpAttack");
+
+        // Wait for 0.5 seconds
+        yield return new WaitForSeconds(0.5f);
+
+        // Start the leap towards player coroutine
+        StartCoroutine(LeapTowardsPlayer());
+    }
+
+
+    private IEnumerator AttackPlayerCoroutine()
+    {
+        // Wait for 1 second or however long your animation takes
+        yield return new WaitForSeconds(1f);
+
+        // Call the AttackPlayer method to apply damage, etc.
+        AttackPlayer();
     }
 
     IEnumerator LeapTowardsPlayer()
@@ -158,26 +208,42 @@ public class EnemyAI : MonoBehaviour
         {
             if (hitCollider.CompareTag("Player"))
             {
-                StunAndDamagePlayer(hitCollider.gameObject);
+                HandlePlayerCollision(hitCollider.gameObject, true, stunDuration, damage);
                 break;
             }
         }
+        
         isLeaping = false;
+        
+        // Stand still after the leap for the duration specified
+        StartCoroutine(StandStillCoroutine());
+    }
+
+    IEnumerator StandStillCoroutine()
+    {
+        isStandingStill = true;
+        yield return new WaitForSeconds(standStillDuration);
+        isStandingStill = false;
     }
 
     void AttackPlayer()
     {
+        animator.SetTrigger("Attack");
         Debug.Log("Attacking player");
-    }
 
-    void StunAndDamagePlayer(GameObject player)
-    {
-        PlayerController playerController = player.GetComponent<PlayerController>();
-        if (playerController != null)
+        // Detect the player in front of the attacker or in a specific range
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
+        foreach (var hitCollider in hitColliders)
         {
-            playerController.Stun(stunDuration);
-            playerController.TakeDamage(damage);
+            if (hitCollider.CompareTag("Player"))
+            {
+                HandlePlayerCollision(hitCollider.gameObject, false, 0f, damage);
+                break;
+            }
         }
+
+        // Stand still after attacking
+        StartCoroutine(StandStillCoroutine());
     }
 
     void MoveEnemy()
@@ -195,13 +261,14 @@ public class EnemyAI : MonoBehaviour
     void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if(isLeaping) {
-            if (flatVel.magnitude > 1.5 * moveSpeed)
-                {
-                    Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                    rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-                }
-                return;
+        if (isLeaping)
+        {
+            if (flatVel.magnitude > 3f * moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
+            return;
         }
         if (flatVel.magnitude > moveSpeed)
         {
@@ -236,22 +303,73 @@ public class EnemyAI : MonoBehaviour
         return randomPosition;
     }
 
-void RotateTowardsMovementDirection()
-{
-    if (moveDirection != Vector3.zero)
+    void RotateTowardsMovementDirection()
     {
-        // Create a target rotation based on the movement direction
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+        if (moveDirection != Vector3.zero)
+        {
+            // Create a target rotation based on the movement direction
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
 
-        // Extract the Y component of the target rotation
-        float targetYRotation = targetRotation.eulerAngles.y;
+            // Extract the Y component of the target rotation
+            float targetYRotation = targetRotation.eulerAngles.y;
 
-        // Create a new rotation that only includes the Y component
-        Quaternion yRotationOnly = Quaternion.Euler(0, targetYRotation, 0);
+            // Create a new rotation that only includes the Y component
+            Quaternion yRotationOnly = Quaternion.Euler(0, targetYRotation, 0);
 
-        // Smoothly rotate the object towards the Y-axis rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, yRotationOnly, Time.deltaTime * 2f);
+            // Smoothly rotate the object towards the Y-axis rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, yRotationOnly, Time.deltaTime * 2f);
+        }
     }
-}
 
+    private void OnAttackCollision(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            HandlePlayerCollision(collision.gameObject, false, 0f, damage);
+        }
+    }
+
+    private void OnJumpAttackCollision(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            HandlePlayerCollision(collision.gameObject, true, stunDuration, damage);
+        }
+    }
+
+    private void HandlePlayerCollision(GameObject player, bool stunPlayer, float stunDuration = 0f, int damage = 0)
+    {
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            if (stunPlayer)
+            {
+                playerController.Stun(stunDuration);
+            }
+            if (damage > 0)
+            {
+                playerController.TakeDamage(damage);
+            }
+        }
+    }
+
+        // Method to stop the agent and let it only fall due to gravity
+    public void StopMovement()
+    {
+        // Set velocity to zero to stop all movement
+        rb.velocity = Vector3.zero;
+
+        // Optionally reset angular velocity if you want to stop any rotation
+        rb.angularVelocity = Vector3.zero;
+
+        // Freeze position constraints to prevent movement but allow falling
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+
+        // Optionally, you can unfreeze the constraints if you want it to fall under gravity
+        // For example, you might want to unfreeze the Y-axis position constraint to let it fall
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        // Optionally, set drag to zero if you have any drag affecting the rigidbody
+        rb.drag = 0;
+    }
 }

@@ -13,8 +13,16 @@ public class PlayerController : MonoBehaviour
     public float airMultiplier = 0.4f;
     bool readyToJump;
 
+    [Header("Dashing")]
+    public float dashForce = 25f; // Force applied during the dash
+    public float dashCooldown = 3f; // Cooldown time for dashing
+    public float dashSpeedMultiplier = 2f; // Speed multiplier during the dash
+    private bool canDash = true; // Whether the player can dash or not
+    private bool isDashing = false; // Whether the player is currently dashing
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode dashKey = KeyCode.LeftShift; // Key to activate dash
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -42,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-                // Find the child GameObject named "PostProcessingGO"
+        // Find the child GameObject named "PostProcessingGO"
         Transform childTransform = transform.Find("PostProcessingGO");
 
         // Ensure the child GameObject exists
@@ -70,13 +78,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // ground check
+        // Ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
         MyInput();
         SpeedControl();
 
-        // handle drag
+        // Handle drag
         if (grounded)
             rb.drag = groundDrag;
         else
@@ -86,6 +94,12 @@ public class PlayerController : MonoBehaviour
         if (isStunned && Time.time >= stunEndTime)
         {
             RecoverFromStun();
+        }
+
+        // Handle dashing
+        if (Input.GetKeyDown(dashKey) && canDash && !isStunned)
+        {
+            StartCoroutine(Dash());
         }
     }
 
@@ -102,7 +116,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        // when to jump
+        // When to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
@@ -115,14 +129,14 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        // calculate movement direction
+        // Calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        // on ground
+        // On ground
         if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        // in air
+        // In air
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
@@ -131,17 +145,20 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        // limit velocity if needed
-        if (flatVel.magnitude > moveSpeed)
+        // Apply speed multiplier during dash
+        float currentMoveSpeed = isDashing ? moveSpeed * dashSpeedMultiplier : moveSpeed;
+
+        // Limit velocity if needed
+        if (flatVel.magnitude > currentMoveSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            Vector3 limitedVel = flatVel.normalized * currentMoveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
     private void Jump()
     {
-        // reset y velocity
+        // Reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
@@ -150,6 +167,26 @@ public class PlayerController : MonoBehaviour
     private void ResetJump()
     {
         readyToJump = true;
+    }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+
+        // Store the current velocity
+        Vector3 dashDirection = moveDirection.normalized;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); // Reset vertical velocity
+
+        // Apply dash force
+        rb.AddForce(dashDirection * dashForce, ForceMode.Impulse);
+
+        // Wait for dash cooldown
+        yield return new WaitForSeconds(dashCooldown);
+
+        // Allow dashing again
+        canDash = true;
+        isDashing = false;
     }
 
     // Health and Combat Methods
@@ -169,7 +206,6 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        
         health -= damage;
         Debug.Log("Player took " + damage + " damage, remaining health: " + health);
 

@@ -40,7 +40,7 @@ public class EnemyGenerator : MonoBehaviour
 
             // Calculate number of enemies based on distance
             int minEnemies = 5;
-            int maxEnemies = 30;
+            int maxEnemies = 15;
             int numberOfEnemies = Mathf.RoundToInt(Mathf.Lerp(minEnemies, maxEnemies, distance / (dungeonWidth + dungeonLength))); // Adjust as needed
 
             // Spawn enemies in currentRoom

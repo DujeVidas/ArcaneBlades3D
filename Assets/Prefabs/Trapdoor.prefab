@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2241473046601828972}
   - component: {fileID: 6801826392387568525}
   - component: {fileID: 3675947996692375772}
+  - component: {fileID: 9019324623434733177}
   m_Layer: 0
   m_Name: Trapdoor
   m_TagString: Untagged
@@ -105,3 +106,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9019324623434733177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373066901052180093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f5c9a32471e18e458dad0feb48b7532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

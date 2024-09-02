@@ -1,15 +1,19 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BossHealth : MonoBehaviour
 {
     public int maxHealth = 500;   // Maximum health of the boss
     public int currentHealth;     // Current health of the boss
     public Animator animator;     // Reference to the Animator component
+    public GameObject gameWonScreen;
 
     private bool isBelowHalfHealth = false; // To check if the health is already below 50%
 
     void Start()
     {
+        gameWonScreen.SetActive(false);
         currentHealth = maxHealth; // Initialize current health to max health at the start
         animator = GetComponent<Animator>(); // Get the Animator component
     }
@@ -41,5 +45,16 @@ public class BossHealth : MonoBehaviour
         Debug.Log("Boss is dead!");
         // Add logic for what happens when the boss dies (e.g., play animation, disable the boss, etc.)
         animator.SetBool("Dead", true);
+        gameWonScreen.SetActive(true);
+        //Time.timeScale = 0f;
+        //Cursor.lockState = CursorLockMode.None;
+        LevelManager.OnDeath();
+        StartCoroutine(LoadMenu());
+    }
+
+    IEnumerator LoadMenu()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(0);
     }
 }

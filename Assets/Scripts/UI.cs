@@ -9,10 +9,12 @@ public class UI : MonoBehaviour
 {
     public GameObject pause;
     public GameObject deathScreen;
+    public GameObject levelClearedScreen;
     public PlayerController player;
     //tmpro text
     public TextMeshProUGUI healthText;
     public TextMeshProUGUI bulletsText;
+    public TextMeshProUGUI levelText;
     private bool isPaused;
     private bool playerDead = false;
     // Start is called before the first frame update
@@ -23,9 +25,11 @@ public class UI : MonoBehaviour
 
     void Start()
     {
+        levelText.SetText("Level: " + LevelManager.level.ToString());
         isPaused = false;
         pause.SetActive(false);
         deathScreen.SetActive(false);
+        levelClearedScreen.SetActive(false);
         healthText.SetText("HP: " + player.health.ToString());
         Time.timeScale = 1f;
         progressBar.gameObject.SetActive(false);
@@ -84,6 +88,18 @@ public class UI : MonoBehaviour
         //LevelManager.score = 0;
         //LevelManager.level = 0;
         SceneManager.LoadScene(1);
+    }
+
+    public void LevelCleared()
+    {
+        levelClearedScreen.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void NextLevel()
+    {
+        LevelManager.IncrementLevel();
     }
 
     public void ReturnToMain()

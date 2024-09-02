@@ -246,6 +246,7 @@ public class PlayerController : MonoBehaviour
         // Optionally disable player controls or show a game over screen
         this.enabled = false; // Disables the PlayerController script
         uiManager.Death();
+        LevelManager.OnDeath();
     }
 
     public void OnCollisionStay(Collision collision)
@@ -254,5 +255,10 @@ public class PlayerController : MonoBehaviour
         {
             //TakeDamage(1);
         }
+    }
+
+    public void OpenTrapdoor()
+    {
+        uiManager.LevelCleared();
     }
 }

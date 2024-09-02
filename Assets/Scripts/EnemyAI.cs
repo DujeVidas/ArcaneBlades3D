@@ -48,6 +48,8 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
+        patrolSpeed = LevelManager.enemySpeed;
+        damage = LevelManager.enemyDamage;
         // Find the child GameObject named "Mremireh O Desbiens"
         Transform childTransform = transform.Find("Mremireh O Desbiens");
 

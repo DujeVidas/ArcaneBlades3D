@@ -252,7 +252,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            TakeDamage(1);
+            //TakeDamage(1);
         }
     }
 }

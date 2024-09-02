@@ -44,39 +44,47 @@ public class TakeDamageRedVFX : MonoBehaviour
         // Start the new coroutine with the given health value
         damageCoroutine = StartCoroutine(TakeDamageEffect(health));
     }
+private IEnumerator TakeDamageEffect(int health)
+{
+    // Calculate initial intensity based on health (0 health -> 0.4 intensity, 100 health -> 0 intensity)
+    intensity = Mathf.Lerp(0.4f, 0f, health / 100f);
+    
+    // Ensure intensity doesn't exceed 0.55
+    intensity = Mathf.Min(intensity, 0.55f);
 
-    private IEnumerator TakeDamageEffect(int health)
+    // Enable the vignette effect with the calculated intensity
+    _vignette.enabled.Override(true);
+    _vignette.intensity.Override(intensity);
+
+    // Increase intensity by 0.1 on hit
+    intensity += 0.2f;
+
+    // Cap the intensity to a maximum of 0.55
+    intensity = Mathf.Min(intensity, 0.55f);
+    _vignette.intensity.Override(intensity);
+
+    // Wait for 1 second before starting the decay
+    yield return new WaitForSeconds(1f);
+
+    // Calculate the target intensity as half of the initial intensity
+    float targetIntensity = intensity / 2f;
+
+    while (intensity > targetIntensity)
     {
-        // Calculate intensity based on health (0 health -> 0.4 intensity, 100 health -> 0 intensity)
-        intensity = Mathf.Lerp(0.4f, 0f, health / 100f);
+        // Gradually reduce intensity towards the target intensity
+        intensity = Mathf.MoveTowards(intensity, targetIntensity, 0.01f);
 
-
-        // Enable the vignette effect with the calculated intensity
-        _vignette.enabled.Override(true);
         _vignette.intensity.Override(intensity);
 
-        // Wait for 5 seconds before starting the decay
-        yield return new WaitForSeconds(5f);
-
-        // Calculate the target intensity as half of the initial intensity
-        float targetIntensity = intensity / 2f;
-
-        while (intensity > 0)
-        {
-            // Gradually reduce intensity towards the target intensity
-            intensity = Mathf.MoveTowards(intensity, targetIntensity, 0.01f);
-
-            _vignette.intensity.Override(intensity);
-
-            // Wait for 0.1 seconds before updating the intensity again
-            yield return new WaitForSeconds(0.1f);
-
-            // Stop the loop if the intensity is 0 or below
-            if (intensity <= 0)
-            {
-                _vignette.enabled.Override(false);
-                yield break;
-            }
-        }
+        // Wait for 0.1 seconds before updating the intensity again
+        yield return new WaitForSeconds(0.1f);
     }
+
+    // After the loop, check if intensity is 0 or below, and disable the vignette if necessary
+    if (intensity <= 0)
+    {
+        _vignette.enabled.Override(false);
+    }
+}
+
 }

@@ -155,15 +155,16 @@ MonoBehaviour:
   damage: 10
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   whatIsGround:
     serializedVersion: 2
     m_Bits: 1
   playerHeight: 2.5
-  chaseRange: 50
-  attackRange: 2
+  chaseRange: 30
+  attackRange: 4
   leapForce: 10
   standStillDuration: 0.5
+  attackCooldown: 1.5
 --- !u!65 &8374607995652792426
 BoxCollider:
   m_ObjectHideFlags: 0

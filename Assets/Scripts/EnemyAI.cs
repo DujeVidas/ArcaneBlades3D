@@ -24,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     public float attackRange = 2f;
     public float leapForce = 35f;
     public float standStillDuration = 1.5f; // Duration to stand still after a leap or attack
+    public float attackCooldown = 2.5f; // Cooldown period after attack or leap
 
     private Transform player;
     private Rigidbody rb;
@@ -31,10 +32,10 @@ public class EnemyAI : MonoBehaviour
     private Vector3 patrolDestination;
     private bool isChasing = false;
     private bool isLeaping = false;
-    private bool readyToJump = true;
     private bool grounded;
     private float nextPatrolTime;
     private float nextLeapTime;
+    private float nextAttackTime;
     private Vector3 patrolCenter;
     private const float patrolRadius = 20f;
 
@@ -42,6 +43,7 @@ public class EnemyAI : MonoBehaviour
     private Animator animator;
 
     private bool isStandingStill = false; // New flag to check if standing still after leap or attack
+    private float lastDamageTime = 0f; // To track the last time damage was dealt
 
     void Start()
     {
@@ -64,6 +66,7 @@ public class EnemyAI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         nextPatrolTime = Time.time + patrolInterval;
         nextLeapTime = Time.time + Random.Range(leapCooldownMin, leapCooldownMax);
+        nextAttackTime = Time.time;
         patrolCenter = transform.position;
         patrolDestination = GetRandomPatrolPosition();
     }
@@ -72,13 +75,15 @@ public class EnemyAI : MonoBehaviour
     {
         if (Time.timeScale == 0f) isPaused = true; else isPaused = false;
         if (isPaused) return;
+
         // Ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
-        if (isStandingStill){
+        if (isStandingStill)
+        {
             animator.SetTrigger("Idle");
-            return;
-        }  // Prevent movement or actions if standing still
+            return; // Prevent movement or actions if standing still
+        }
 
         if (!isChasing)
         {
@@ -157,21 +162,20 @@ public class EnemyAI : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= 15f && Time.time >= nextLeapTime && !isLeaping && grounded)
+        if (distanceToPlayer <= 15f && Time.time >= nextLeapTime && !isLeaping)
         {
             StartCoroutine(DelayedLeap());
         }
 
-        if (distanceToPlayer <= attackRange)
+        if (distanceToPlayer <= attackRange && Time.time >= nextAttackTime)
         {
-            animator.SetTrigger("Attack");
             StartCoroutine(AttackPlayerCoroutine());
         }
     }
 
-        private IEnumerator DelayedLeap()
+    private IEnumerator DelayedLeap()
     {
-        // Trigger the jump attack animation
+        isLeaping = true;
         animator.SetTrigger("JumpAttack");
 
         // Wait for 0.5 seconds
@@ -181,19 +185,25 @@ public class EnemyAI : MonoBehaviour
         StartCoroutine(LeapTowardsPlayer());
     }
 
-
     private IEnumerator AttackPlayerCoroutine()
     {
-        // Wait for 1 second or however long your animation takes
-        yield return new WaitForSeconds(1f);
+        animator.SetTrigger("Attack");
 
-        // Call the AttackPlayer method to apply damage, etc.
+        // Wait for the attack animation duration (1 second)
+        yield return new WaitForSeconds(0.7f);
+
+        // Call the AttackPlayer method to apply damage
         AttackPlayer();
+
+        // Stand still after attacking
+        yield return StandStillCoroutine();
+
+        // Cooldown before another attack is allowed
+        nextAttackTime = Time.time + attackCooldown;
     }
 
     IEnumerator LeapTowardsPlayer()
     {
-        isLeaping = true;
         rb.velocity = Vector3.zero;
 
         Vector3 leapDirection = (player.position - transform.position).normalized;
@@ -206,17 +216,21 @@ public class EnemyAI : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Player"))
+            if (hitCollider.CompareTag("Player") && Time.time - lastDamageTime >= attackCooldown)
             {
                 HandlePlayerCollision(hitCollider.gameObject, true, stunDuration, damage);
+                lastDamageTime = Time.time; // Update last damage time
                 break;
             }
         }
-        
+
         isLeaping = false;
-        
+
         // Stand still after the leap for the duration specified
-        StartCoroutine(StandStillCoroutine());
+        yield return StandStillCoroutine();
+
+        // Cooldown before another leap or attack is allowed
+        nextAttackTime = Time.time + attackCooldown;
     }
 
     IEnumerator StandStillCoroutine()
@@ -228,22 +242,19 @@ public class EnemyAI : MonoBehaviour
 
     void AttackPlayer()
     {
-        animator.SetTrigger("Attack");
         Debug.Log("Attacking player");
 
         // Detect the player in front of the attacker or in a specific range
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Player"))
+            if (hitCollider.CompareTag("Player") && Time.time - lastDamageTime >= attackCooldown)
             {
                 HandlePlayerCollision(hitCollider.gameObject, false, 0f, damage);
+                lastDamageTime = Time.time; // Update last damage time
                 break;
             }
         }
-
-        // Stand still after attacking
-        StartCoroutine(StandStillCoroutine());
     }
 
     void MoveEnemy()
@@ -353,7 +364,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-        // Method to stop the agent and let it only fall due to gravity
+    // Method to stop the agent and let it only fall due to gravity
     public void StopMovement()
     {
         // Set velocity to zero to stop all movement

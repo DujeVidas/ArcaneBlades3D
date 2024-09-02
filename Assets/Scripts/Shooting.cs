@@ -14,6 +14,8 @@ public class Shooting : MonoBehaviour
     public int magSize = 10;
     public ParticleSystem muzzleFlash;
     private int bulletsLeft;
+    public AudioSource bulletSound;
+    public AudioSource reloadSound;
 
     public Animator animator;
     public GameObject uiManager; // Reference to the UI script
@@ -21,6 +23,7 @@ public class Shooting : MonoBehaviour
 
     private List<GameObject> instantiatedDecals = new List<GameObject>();
     private bool canShoot = true;
+    private bool canReload = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,9 +44,10 @@ public class Shooting : MonoBehaviour
         }
 
         //start reload animation if R is pressed
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && canReload)
         {
             canShoot = false;
+            canReload = false;
             //wait for the reload animation to finish
             StartCoroutine(WaitForReload());
         }
@@ -52,14 +56,17 @@ public class Shooting : MonoBehaviour
     IEnumerator WaitForReload()
     {
         animator.SetTrigger("Reload");
+        reloadSound.Play();
         yield return new WaitForSeconds(1.5f);
         bulletsLeft = magSize;
         ui.SetBulletsText(bulletsLeft, magSize);
         canShoot = true;
+        canReload = true;
     }
 
     void Shoot()
     {
+        bulletSound.PlayOneShot(bulletSound.clip);
         muzzleFlash.Play();
         Ray shotRay = new Ray(mainCamera.position, mainCamera.forward);
         if (Physics.Raycast(shotRay, out RaycastHit rayHit, maxDistance))

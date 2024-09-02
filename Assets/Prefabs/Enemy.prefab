@@ -158,7 +158,7 @@ MonoBehaviour:
     m_Bits: 128
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 256
   playerHeight: 2.5
   chaseRange: 30
   attackRange: 4

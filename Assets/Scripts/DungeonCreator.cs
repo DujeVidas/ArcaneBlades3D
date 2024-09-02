@@ -226,6 +226,7 @@ private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner, GameOb
         
         // Set the tag and parent of the dungeon floor
         dungeonFloor.tag = "Floor";
+        dungeonFloor.layer = LayerMask.NameToLayer("Floor");
         // Set the parent of the dungeon floor to floorParent
         dungeonFloor.transform.parent = floorParent.transform;
 

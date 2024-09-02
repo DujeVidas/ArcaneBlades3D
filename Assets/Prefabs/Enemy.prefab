@@ -150,7 +150,7 @@ MonoBehaviour:
   patrolInterval: 5
   leapCooldownMin: 8
   leapCooldownMax: 10
-  leapVerticalForce: 6
+  leapVerticalForce: 8
   stunDuration: 1
   damage: 10
   playerLayer:
@@ -159,11 +159,11 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 1
-  playerHeight: 2
+  playerHeight: 2.5
   chaseRange: 50
   attackRange: 2
-  leapForce: 30
-  standStillDuration: 1.5
+  leapForce: 10
+  standStillDuration: 0.5
 --- !u!65 &8374607995652792426
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -263,7 +263,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         if (isLeaping)
         {
-            if (flatVel.magnitude > 3f * moveSpeed)
+            if (flatVel.magnitude > 1.5f * moveSpeed)
             {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);

@@ -25,6 +25,7 @@ public class EnemyAI : MonoBehaviour
     public float leapForce = 35f;
     public float standStillDuration = 1.5f; // Duration to stand still after a leap or attack
     public float attackCooldown = 2.5f; // Cooldown period after attack or leap
+    public AudioSource growl;
 
     private Transform player;
     private Rigidbody rb;
@@ -153,6 +154,10 @@ public class EnemyAI : MonoBehaviour
     void ChasePlayer()
     {
         animator.SetBool("isChasing", true);
+        if(!growl.isPlaying)
+        {
+            growl.Play();
+        }
 
         moveDirection = (player.position - transform.position).normalized;
 
